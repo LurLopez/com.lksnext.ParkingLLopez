@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop  # Se activa al subir código a estas ramas
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
 
