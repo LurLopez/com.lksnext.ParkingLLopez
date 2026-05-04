@@ -4,6 +4,9 @@ plugins {
     id("org.sonarqube") version "5.0.0.4638"
 }
 
+
+
+
 android {
     namespace = "com.lksnext.ParkingLLopez"
     compileSdk {

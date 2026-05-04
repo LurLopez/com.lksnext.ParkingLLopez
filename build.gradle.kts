@@ -1,5 +1,6 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Archivo de la raíz: LKSProyecto/build.gradle.kts
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
+    id("org.sonarqube") version "5.0.0.4638" apply false // Asegúrate de que ponga 'apply false'
 }
