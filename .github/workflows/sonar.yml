@@ -6,6 +6,7 @@ on:
       - main
       - master
       - develop
+      - feature
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -24,11 +25,11 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
-      # 1. Compilamos tu app limpia sin plugins de Sonar
-      - name: Build Android App
-        run: ./gradlew assembleDebug
+      # 1. Compilamos Y ejecutamos los Unit Tests (testDebugUnitTest es el estándar de Android)
+      - name: Build and Run Tests
+        run: ./gradlew assembleDebug testDebugUnitTest
 
-      # 2. Usamos el escáner oficial de SonarSource (Bypass para el bug de Gradle)
+      # 2. Escaneamos con Sonar indicándole dónde están los reportes de los tests
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -40,4 +41,6 @@ jobs:
             -Dsonar.organization=lsk-llopez
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.sources=app/src/main/java
+            -Dsonar.tests=app/src/test/java
             -Dsonar.java.binaries=app/build/tmp/kotlin-classes/debug
+            -Dsonar.junit.reportPaths=app/build/test-results/testDebugUnitTest
