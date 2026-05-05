@@ -27,7 +27,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-// ¡Esta es la línea clave que conectará con los colores de tu proyecto!
+
+// Importaciones para la navegación (¡Asegúrate de tener la librería en build.gradle.kts!)
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
 import com.lksnext.ParkingLLopez.ui.theme.LKSProyectoTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,18 +40,46 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Usamos tu tema personalizado
             LKSProyectoTheme {
+                // 1. Inicializamos el controlador de navegación
+                val navController = rememberNavController()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(modifier = Modifier.padding(innerPadding))
+                    // 2. El NavHost gestiona qué pantalla se ve
+                    NavHost(
+                        navController = navController,
+                        startDestination = "login", // Arranca en el login
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        // Ruta 1: Pantalla de Login
+                        composable("login") {
+                            LoginScreen(
+                                // Le decimos qué hacer cuando pulse "Regístrate"
+                                onNavigateToRegister = { navController.navigate("register") }
+                            )
+                        }
+
+                        // Ruta 2: Pantalla de Registro
+                        composable("register") {
+                            RegisterScreen(
+                                // Le decimos qué hacer cuando pulse "Inicia sesión"
+                                onNavigateToLogin = { navController.popBackStack() },
+                                onNavigateToVerify = { email -> /* De momento vacío */ }
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
 
+// 3. Modificamos el LoginScreen para que reciba la acción de navegar
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    onNavigateToRegister: () -> Unit, // <--- Parámetro nuevo
+    modifier: Modifier = Modifier
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -97,7 +130,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = { /* Lógica de registro */ }) {
+        // 4. Se ejecuta la navegación al pulsar el botón
+        TextButton(onClick = onNavigateToRegister) {
             Text("¿No tienes cuenta? Regístrate")
         }
     }
