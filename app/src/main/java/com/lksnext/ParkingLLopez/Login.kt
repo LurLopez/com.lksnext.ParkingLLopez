@@ -113,7 +113,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 // AQUÍ ESTÁ EL CÓDIGO QUE DETECTARÁ SONARQUBE
-                try {
+                try{
                     //  Simulamos una operación de parseo que podría fallar
                     val dummyNumber = "abc".toInt()
                 } catch (e: NumberFormatException) {
