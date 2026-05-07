@@ -114,7 +114,7 @@ fun LoginScreen(
             onClick = {
                 // AQUÍ ESTÁ EL CÓDIGO QUE DETECTARÁ SONARQUBE
                 try {
-                    // Simulamos una operación de parseo que podría fallar
+                    //  Simulamos una operación de parseo que podría fallar
                     val dummyNumber = "abc".toInt()
                 } catch (e: NumberFormatException) {
                     // CODE SMELL: Catch vacío (Exceptions should not be ignored)
