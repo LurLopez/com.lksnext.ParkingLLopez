@@ -28,7 +28,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// Importaciones para la navegación (¡Asegúrate de tener la librería en build.gradle.kts!)
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,31 +40,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LKSProyectoTheme {
-                // 1. Inicializamos el controlador de navegación
                 val navController = rememberNavController()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // 2. El NavHost gestiona qué pantalla se ve
                     NavHost(
                         navController = navController,
-                        startDestination = "login", // Arranca en el login
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        // Ruta 1: Pantalla de Login
                         composable("login") {
                             LoginScreen(
-                                // Le decimos qué hacer cuando pulse "Regístrate"
                                 onNavigateToRegister = { navController.navigate("register") }
                             )
                         }
 
-                        // Ruta 2: Pantalla de Registro
                         composable("register") {
-                            RegisterScreen(
-                                // Le decimos qué hacer cuando pulse "Inicia sesión"
-                                onNavigateToLogin = { navController.popBackStack() },
-                                onNavigateToVerify = { email -> /* De momento vacío */ }
-                            )
+                            /* RegisterScreen(...) */
                         }
                     }
                 }
@@ -74,10 +64,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// 3. Modificamos el LoginScreen para que reciba la acción de navegar
 @Composable
 fun LoginScreen(
-    onNavigateToRegister: () -> Unit, // <--- Parámetro nuevo
+    onNavigateToRegister: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var email by remember { mutableStateOf("") }
@@ -122,7 +111,17 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { /* Lógica de entrar */ },
+            onClick = {
+                // AQUÍ ESTÁ EL CÓDIGO QUE DETECTARÁ SONARQUBE
+                try {
+                    // Simulamos una operación de parseo que podría fallar
+                    val dummyNumber = "abc".toInt()
+                } catch (e: NumberFormatException) {
+                    // CODE SMELL: Catch vacío (Exceptions should not be ignored)
+                    // SonarQube te marcará este bloque porque no se hace nada con 'e'
+                    // ni hay ningún log o justificación.
+                }
+            },
             modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {
             Text("ENTRAR", fontSize = 16.sp)
@@ -130,7 +129,6 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 4. Se ejecuta la navegación al pulsar el botón
         TextButton(onClick = onNavigateToRegister) {
             Text("¿No tienes cuenta? Regístrate")
         }
