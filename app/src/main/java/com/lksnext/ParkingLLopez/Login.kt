@@ -27,7 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-// ¡Esta es la línea clave que conectará con los colores de tu proyecto!
+
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
 import com.lksnext.ParkingLLopez.ui.theme.LKSProyectoTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,18 +39,36 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Usamos tu tema personalizado
             LKSProyectoTheme {
+                val navController = rememberNavController()
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(modifier = Modifier.padding(innerPadding))
+                    NavHost(
+                        navController = navController,
+                        startDestination = "login",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("login") {
+                            LoginScreen(
+                                onNavigateToRegister = { navController.navigate("register") }
+                            )
+                        }
+
+                        composable("register") {
+                            /* RegisterScreen(...) */
+                        }
+                    }
                 }
             }
         }
     }
 }
-//
+
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    onNavigateToRegister: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -89,7 +111,17 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { /* Lógica de entrar */ },
+            onClick = {
+                // AQUÍ ESTÁ EL CÓDIGO QUE DETECTARÁ SONARQUBE
+                try{
+                    //  Simulamos una operación de parseo que podría fallar
+                    val dummyNumber = "abc".toInt()
+                } catch (e: NumberFormatException) {
+                    // CODE SMELL: Catch vacío (Exceptions should not be ignored)
+                    // SonarQube te marcará este bloque porque no se hace nada con 'e'
+                    // ni hay ningún log o justificación.
+                }
+            },
             modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {
             Text("ENTRAR", fontSize = 16.sp)
@@ -97,7 +129,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = { /* Lógica de registro */ }) {
+        TextButton(onClick = onNavigateToRegister) {
             Text("¿No tienes cuenta? Regístrate")
         }
     }
