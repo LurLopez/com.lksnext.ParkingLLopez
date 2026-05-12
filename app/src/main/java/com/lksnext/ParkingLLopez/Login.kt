@@ -50,13 +50,21 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("login") {
                             LoginScreen(
-                                onNavigateToRegister = { navController.navigate("register") }
+                                onNavigateToRegister = { navController.navigate("register") },
+                                onNavigatetoForgotPassWord = {navController.navigate("forgot_password")}
                             )
                         }
 
                         composable("register") {
                             /* RegisterScreen(...) */
                         }
+
+                        composable ("forgot_password"){
+                            ForgotPasswordScreen (
+                                onNavigateBack = {navController.popBackStack()}
+                            )
+                        }
+
                     }
                 }
             }
@@ -67,6 +75,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
+    onNavigatetoForgotPassWord: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var email by remember { mutableStateOf("") }
@@ -102,7 +111,7 @@ fun LoginScreen(
         )
 
         TextButton(
-            onClick = { /* Lógica de recuperar contraseña */ },
+            onClick = onNavigatetoForgotPassWord,
             modifier = Modifier.align(Alignment.End)
         ) {
             Text("¿Has olvidado tu contraseña?")
@@ -122,7 +131,9 @@ fun LoginScreen(
                     // ni hay ningún log o justificación.
                 }
             },
-            modifier = Modifier.fillMaxWidth().height(50.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
         ) {
             Text("ENTRAR", fontSize = 16.sp)
         }
